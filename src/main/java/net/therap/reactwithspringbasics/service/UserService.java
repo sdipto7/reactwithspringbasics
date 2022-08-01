@@ -28,7 +28,7 @@ public class UserService {
         return user.isPresent() ? user.get() : new User();
     }
 
-    public List<User> findAll(Designation designation) {
+    public List<User> findAll() {
         return userRepo.findAll();
     }
 
