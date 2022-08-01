@@ -16,14 +16,15 @@ function UserForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        AddUser(user);
+        addUser(user);
     };
 
-    const AddUser = (user) => {
+    const addUser = (user) => {
         axios.post("http://localhost:9090/api/user/save-user", user)
             .then((response) => {
                 console.log(response);
                 toast.success("User saved successfully!")
+                setUser({firstName:'',lastName:'',username:''});
             }, (error) => {
                 console.log(error);
                 toast.error("Something went wrong!")
@@ -46,6 +47,7 @@ function UserForm() {
                         placeholder='Enter First Name'
                         name='firstName'
                         id='firstName'
+                        value={user.firstName}
                         onChange={onChange} />
                 </FormGroup>
                 <FormGroup>
@@ -56,6 +58,7 @@ function UserForm() {
                         type='text'
                         placeholder='Enter Last Name'
                         name='lastName'
+                        value={user.lastName}
                         id='lastName'
                         onChange={onChange} />
                 </FormGroup>
@@ -66,6 +69,7 @@ function UserForm() {
                     <Input
                         type='text'
                         placeholder='Enter Username'
+                        value={user.username}
                         name='username'
                         id='username'
                         onChange={onChange} />

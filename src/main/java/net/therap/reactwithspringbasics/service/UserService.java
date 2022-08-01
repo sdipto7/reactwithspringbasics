@@ -41,6 +41,7 @@ public class UserService {
 
     @Transactional
     public void delete(User user) {
+        System.out.println(user);
         userRepo.delete(user);
     }
 }

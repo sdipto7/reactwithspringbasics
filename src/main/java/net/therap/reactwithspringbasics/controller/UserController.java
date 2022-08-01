@@ -36,4 +36,10 @@ public class UserController {
         User user = UserDtoMapper.convertUserDtoToUser(userDto);
         userService.saveOrUpdate(user);
     }
+
+    @DeleteMapping(value = "/delete-user/{id}")
+    public void deleteUser(@PathVariable(name = "id") long id) {
+        System.out.println(id);
+        userService.delete(userService.findById(id));
+    }
 }

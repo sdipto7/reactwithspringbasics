@@ -2,21 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
-import base_url from "../api/RestApi";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
-    const [list, setUser] = useState({});
+    const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
+    
+    const [userList, setUserList] = useState({});
 
     useEffect(() => {
         document.title = 'User List';
-        getAllUsers();
+        getUserList();
     }, []);
 
-    //function to call server
-    const getAllUsers = () => {
+    //function to get user list
+    const getUserList = () => {
         axios.get('http://localhost:9090/api/user/user-list').then(
             (response) => {
-                setUser(response.data)
+                setUserList(response.data)
                 toast.success("All user data successfully loaded");
             },
             (error) => {
@@ -25,10 +26,19 @@ function UserTable({ width = 'auto', height = 'auto' }) {
         );
     }
 
-    const colNames = ['ID', 'Name', 'Username', 'action']
-
-    const DeleteButtonHandler = () => {
-        toast.warning("Clicked on delete", { position: "top-center" });
+    //function to delete a user using an id
+    const deleteUser = (id) => {
+        console.log(id);
+        axios.delete(`http://localhost:9090/api/user/delete-user/${id}`).then(
+            (response) => {
+                console.log("successfully deleted");
+                toast.success("User deleted successfully!");
+                setUserList(userList.filter((user) => user.id != id));
+            },
+            (error) => {
+                console.log(error);
+                toast.error("Something went wrong!");
+            });
     };
 
     const UpdateButtonHandler = () => {
@@ -38,7 +48,7 @@ function UserTable({ width = 'auto', height = 'auto' }) {
     return (
         <div className="m-auto align-self-center" style={{ width: '70%', boxShadow: '3px 6px 3px #ccc' }}>
             <ToastContainer />
-            {list.length > 0 ?
+            {userList.length > 0 ?
                 (<table cellSpacing="0" style={{ width: '100%', height: height, padding: '5px 10px' }}>
                     <thead style={{ backgroundColor: "black", color: "white" }}>
                         <tr>
@@ -50,14 +60,22 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.values(list).map((object, index) => (
+                        {Object.values(userList).map((user, index) => (
                             <tr key={index}>
-                                {Object.values(object).map((value, index2) => (
-                                    <td key={index2}>{value}</td>
+                                {Object.values(user).map((fields, index2) => (
+                                    <td key={index2}>{fields}</td>
                                 ))}
                                 <td>
-                                    <Button outline color="info" onClick={UpdateButtonHandler}>Update</Button>
-                                    <Button className="mx-2" outline color="warning" onClick={DeleteButtonHandler}>Delete</Button>
+                                    <Button
+                                        outline color="info"
+                                        onClick={UpdateButtonHandler}>Update
+                                    </Button>
+                                    <Button
+                                        className="mx-2"
+                                        outline color="warning"
+                                        onClick={()=>deleteUser(user.id)}>
+                                        Delete
+                                    </Button>
                                 </td>
                             </tr>
                         ))
