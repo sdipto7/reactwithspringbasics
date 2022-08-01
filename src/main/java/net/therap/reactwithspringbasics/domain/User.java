@@ -1,8 +1,6 @@
 package net.therap.reactwithspringbasics.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
@@ -17,15 +15,13 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User extends Persistent {
 
     private static final long serialVersionUID = 1L;
-
-    public User() {
-    }
 
     @Column(name = "first_name")
     @Size(min = 2, max = 100)
