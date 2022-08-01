@@ -27,12 +27,13 @@ public class UserController {
 
         return userService.findAll()
                 .stream()
-                .map(user -> UserDtoMapper.convertToUserDto(user))
+                .map(user -> UserDtoMapper.convertUserToUserDto(user))
                 .collect(Collectors.toList());
     }
 
     @PostMapping(value = "/save-user")
-    public void saveUser(@RequestBody User user) {
+    public void saveUser(@RequestBody UserDto userDto) {
+        User user = UserDtoMapper.convertUserDtoToUser(userDto);
         userService.saveOrUpdate(user);
     }
 }
