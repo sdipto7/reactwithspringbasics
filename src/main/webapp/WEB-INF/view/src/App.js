@@ -23,8 +23,9 @@ function App() {
             <Col md={8}>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path='/addUser' element={<UserForm />} exact />
                 <Route path='/userList' element={<UserTable />} exact />
+                <Route path='/addUser' element={<UserForm key={"add"} />} exact />
+                <Route path='/updateUser/:id' element={<UserForm key={"update"} />} exact />
               </Routes>
             </Col>
           </Row>

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
+import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
+import UserForm from "./UserForm";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
-    
+
     const [userList, setUserList] = useState({});
 
     useEffect(() => {
@@ -41,8 +43,10 @@ function UserTable({ width = 'auto', height = 'auto' }) {
             });
     };
 
-    const UpdateButtonHandler = () => {
-        toast.info("Clicked on update ", { position: "top-center" });
+    const updateUser = (user) => {
+        // toast.info("Clicked on update ", { position: "top-center" });
+        console.log("clicked on update");
+        console.log(user);
     };
 
     return (
@@ -66,14 +70,16 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                                     <td key={index2}>{fields}</td>
                                 ))}
                                 <td>
-                                    <Button
-                                        outline color="info"
-                                        onClick={UpdateButtonHandler}>Update
-                                    </Button>
+                                    <Link to={`/updateUser/${user.id}`}>
+                                        <Button
+                                            outline color="info"
+                                            onClick={() => updateUser(user)}>Update
+                                        </Button>
+                                    </Link>
                                     <Button
                                         className="mx-2"
                                         outline color="warning"
-                                        onClick={()=>deleteUser(user.id)}>
+                                        onClick={() => deleteUser(user.id)}>
                                         Delete
                                     </Button>
                                 </td>

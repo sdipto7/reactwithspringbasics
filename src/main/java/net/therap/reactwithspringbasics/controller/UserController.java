@@ -2,6 +2,7 @@ package net.therap.reactwithspringbasics.controller;
 
 import net.therap.reactwithspringbasics.DTO.UserDto;
 import net.therap.reactwithspringbasics.domain.User;
+import net.therap.reactwithspringbasics.helper.UserHelper;
 import net.therap.reactwithspringbasics.service.UserService;
 import net.therap.reactwithspringbasics.util.UserDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserHelper userHelper;
+
+    @GetMapping(value = "/{id}")
+    public UserDto getUserById(@PathVariable(name = "id") long id) {
+        User user = userService.findById(id);
+        return UserDtoMapper.convertUserToUserDto(user);
+    }
+
     @GetMapping(value = "/user-list")
     public List<UserDto> showUserList() {
 
@@ -35,6 +45,12 @@ public class UserController {
     public void saveUser(@RequestBody UserDto userDto) {
         User user = UserDtoMapper.convertUserDtoToUser(userDto);
         userService.saveOrUpdate(user);
+    }
+
+    @PutMapping(value = "/update-user")
+    public void updateUser(@RequestBody UserDto userDto) {
+        System.out.println(userDto.getId());
+        userService.saveOrUpdate(userHelper.getUpdatedUser(userDto));
     }
 
     @DeleteMapping(value = "/delete-user/{id}")

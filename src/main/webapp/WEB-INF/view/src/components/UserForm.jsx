@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Container, Form, FormGroup, Input, Label, Button, Row, Col } from "reactstrap";
+import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 function UserForm() {
     const [user, setUser] = useState({});
+
+    const { id } = useParams();
 
     const onChange = (event) => {
         setUser({ ...user, [event.target.name]: event.target.value });
@@ -12,23 +15,59 @@ function UserForm() {
 
     useEffect(() => {
         document.title = "User Form";
+        if (!(id == null || id == '')) {
+            getUserToUpdate(id);
+        } else {
+            setUser("");
+        }
     }, []);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        addUser(user);
-    };
+    const getUserToUpdate = (id) => {
+        axios.get(`http://localhost:9090/api/user/${id}`)
+            .then((response) => {
+                console.log(response.headers);
+                setUser(response.data);
+            }, (error) => {
+                console.log(error);
+            });
+    }
 
-    const addUser = (user) => {
+    const saveUser = (user) => {
         axios.post("http://localhost:9090/api/user/save-user", user)
             .then((response) => {
                 console.log(response);
                 toast.success("User saved successfully!")
-                setUser({firstName:'',lastName:'',username:''});
+                setUser({ firstName: '', lastName: '', username: '' });
             }, (error) => {
                 console.log(error);
                 toast.error("Something went wrong!")
             });
+    };
+
+    const updateUser = (user) => {
+        axios.put("http://localhost:9090/api/user/update-user", user)
+            .then((response) => {
+                console.log(response.data);
+                toast.success("User Updated successfully!")
+                setUser({ firstName: '', lastName: '', username: '' });
+            }, (error) => {
+                console.log(error);
+                toast.error("Something went wrong!")
+            });
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (id === undefined || id === null || id == '') {
+            console.log("in save");
+            console.log(id);
+            saveUser(user)
+        } else {
+            console.log("in update");
+            console.log(id);
+            updateUser(user);
+        }
     };
 
     return (
@@ -114,7 +153,9 @@ function UserForm() {
                         size="lg"
                         className="my-2"
                         style={{ width: "20%" }}
-                        color="success">Add User</Button>
+                        color="success">
+                        Save User
+                    </Button>
                 </Container>
             </Form>
         </Fragment >
