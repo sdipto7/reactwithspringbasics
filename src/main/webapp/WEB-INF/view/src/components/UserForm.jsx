@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 
 function UserForm() {
     const [user, setUser] = useState({});
-
+    const [formValidations, setFormValidations] = useState({});
     const { id } = useParams();
 
     const onChange = (event) => {
@@ -59,16 +59,36 @@ function UserForm() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (id === undefined || id === null || id == '') {
-            console.log("in save");
-            console.log(id);
-            saveUser(user)
-        } else {
-            console.log("in update");
-            console.log(id);
-            updateUser(user);
+        setFormValidations(validate(user));
+
+        if (Object.keys(formValidations).length === 0) {
+            if (id === undefined || id === null || id == '') {
+                console.log("in save");
+                console.log(id);
+                saveUser(user)
+            } else {
+                console.log("in update");
+                console.log(id);
+                updateUser(user);
+            }
         }
     };
+
+    const validate = (user) => {
+        const errors = {};
+
+        if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
+            errors.firstName = "First Name is required";
+        }
+        if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
+            errors.lastName = "Last Name is required";
+        }
+        if (user.username === null || user.username === undefined || user.username == '') {
+            errors.username = "Username is required";
+        }
+
+        return errors;
+    }
 
     return (
         <Fragment>
@@ -88,6 +108,9 @@ function UserForm() {
                         id='firstName'
                         value={user.firstName}
                         onChange={onChange} />
+                    <p style={{ color: 'red' }}>
+                        {formValidations.firstName}
+                    </p>
                 </FormGroup>
                 <FormGroup>
                     <Label>
@@ -100,6 +123,9 @@ function UserForm() {
                         value={user.lastName}
                         id='lastName'
                         onChange={onChange} />
+                    <p style={{ color: 'red' }}>
+                        {formValidations.lastName}
+                    </p>
                 </FormGroup>
                 <FormGroup>
                     <Label>
@@ -112,6 +138,9 @@ function UserForm() {
                         name='username'
                         id='username'
                         onChange={onChange} />
+                    <p style={{ color: 'red' }}>
+                        {formValidations.username}
+                    </p>
                 </FormGroup>
 
                 {/* <FormGroup>
