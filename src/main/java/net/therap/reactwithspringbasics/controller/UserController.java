@@ -6,8 +6,11 @@ import net.therap.reactwithspringbasics.helper.UserHelper;
 import net.therap.reactwithspringbasics.service.UserService;
 import net.therap.reactwithspringbasics.util.UserDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,34 +30,44 @@ public class UserController {
     private UserHelper userHelper;
 
     @GetMapping(value = "/{id}")
-    public UserDto getUserById(@PathVariable(name = "id") long id) {
-        User user = userService.findById(id);
-        return UserDtoMapper.convertUserToUserDto(user);
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") long id) {
+        UserDto userDto = UserDtoMapper.convertUserToUserDto(userService.findById(id));
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/user-list")
-    public List<UserDto> showUserList() {
-
-        return userService.findAll()
+    public ResponseEntity<List<UserDto>> showUserList() {
+        List<UserDto> userDtoList = userService.findAll()
                 .stream()
                 .map(user -> UserDtoMapper.convertUserToUserDto(user))
                 .collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }
 
     @PostMapping(value = "/save-user")
-    public void saveUser(@RequestBody UserDto userDto) {
-        User user = UserDtoMapper.convertUserDtoToUser(userDto);
-        userService.saveOrUpdate(user);
+    public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto) {
+        User savedUser = userService.saveOrUpdate(UserDtoMapper.convertUserDtoToUser(userDto));
+
+        UserDto responseUser = UserDtoMapper.convertUserToUserDto(savedUser);
+
+        return new ResponseEntity<>(responseUser, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update-user")
-    public void updateUser(@RequestBody UserDto userDto) {
-        System.out.println(userDto.getId());
-        userService.saveOrUpdate(userHelper.getUpdatedUser(userDto));
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+        User savedUser = userService.saveOrUpdate(userHelper.getUpdatedUser(userDto));
+
+        UserDto responseUser = UserDtoMapper.convertUserToUserDto(savedUser);
+
+        return new ResponseEntity<>(responseUser, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping(value = "/delete-user/{id}")
-    public void deleteUser(@PathVariable(name = "id") long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "id") long id) {
         userService.delete(userService.findById(id));
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

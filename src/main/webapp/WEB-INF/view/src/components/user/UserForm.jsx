@@ -4,6 +4,10 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
+import userApi from "./api/userApi";
+import userValidation from "./validation/userValidation";
+import useUser from "./hook/useUser";
+
 function UserForm() {
     const [user, setUser] = useState({});
     const [formValidations, setFormValidations] = useState({});
@@ -39,7 +43,8 @@ function UserForm() {
                 toast.success("User saved successfully!")
                 setUser({ firstName: '', lastName: '', username: '' });
             }, (error) => {
-                console.log(error);
+                // console.log(error.response.data);
+                setFormValidations(backendValidation(error.response.data));
                 toast.error("Something went wrong!")
             });
     };
@@ -59,39 +64,45 @@ function UserForm() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        setFormValidations(validate(user));
+        setFormValidations(frontendValidation(user));
 
         if (Object.keys(formValidations).length === 0) {
             if (id === undefined || id === null || id == '') {
-                console.log("in save");
-                console.log(id);
                 saveUser(user)
             } else {
-                console.log("in update");
-                console.log(id);
                 updateUser(user);
             }
         }
     };
 
-    const validate = (user) => {
+    const frontendValidation = (user) => {
         const errors = {};
 
-        if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
-            errors.firstName = "First Name is required";
-        }
-        if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
-            errors.lastName = "Last Name is required";
-        }
-        if (user.username === null || user.username === undefined || user.username == '') {
-            errors.username = "Username is required";
-        }
+        // if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
+        //     errors.firstName = "First Name is required";
+        // }
+        // if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
+        //     errors.lastName = "Last Name is required";
+        // }
+        // if (user.username === null || user.username === undefined || user.username == '') {
+        //     errors.username = "Username is required";
+        // }
+
+        return errors;
+    }
+
+    const backendValidation = (errorData) => {
+        const errors = {};
+        
+        errors.firstName = errorData.firstName;
+        errors.lastName = errorData.lastName;
+        errors.username = errorData.username;
 
         return errors;
     }
 
     return (
-        <Fragment>
+        <>
 
             <ToastContainer />
 
@@ -187,7 +198,7 @@ function UserForm() {
                     </Button>
                 </Container>
             </Form>
-        </Fragment >
+        </ >
     );
 };
 

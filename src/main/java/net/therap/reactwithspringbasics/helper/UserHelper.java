@@ -18,10 +18,9 @@ public class UserHelper {
 
     public User getUpdatedUser(UserDto userDto) {
         User user = userService.findById(userDto.getId());
-        System.out.println(user);
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        user.setUsername(userDto.getLastName());
+        user.setUsername(userDto.getUsername());
 
         return user;
     }

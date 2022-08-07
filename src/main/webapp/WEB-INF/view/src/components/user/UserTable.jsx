@@ -3,7 +3,6 @@ import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
-import UserForm from "./UserForm";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']

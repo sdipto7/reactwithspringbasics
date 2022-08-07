@@ -1,11 +1,11 @@
 import './App.css';
-import UserForm from './components/UserForm';
 import Header from './components/Header';
 import { Col, Container, Row } from 'reactstrap';
 import Menu from './components/Menu';
 import Home from './components/Home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserTable from './components/UserTable';
+import UserTable from './components/user/UserTable';
+import UserForm from './components/user/UserForm';
 
 function App() {
   return (

@@ -1,6 +1,5 @@
 package net.therap.reactwithspringbasics.service;
 
-import net.therap.reactwithspringbasics.domain.Designation;
 import net.therap.reactwithspringbasics.domain.User;
 import net.therap.reactwithspringbasics.repository.UserRepo;
 import net.therap.reactwithspringbasics.util.HashGenerator;
@@ -33,10 +32,12 @@ public class UserService {
     }
 
     @Transactional
-    public void saveOrUpdate(User user) {
-        user.setPassword(HashGenerator.getMd5(user.getPassword()));
+    public User saveOrUpdate(User user) {
+        if (user.isNew()) {
+            user.setPassword(HashGenerator.getMd5(user.getPassword()));
+        }
 
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     @Transactional
