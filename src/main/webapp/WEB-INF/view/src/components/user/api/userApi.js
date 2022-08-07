@@ -1,16 +1,17 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
-// const getUserToUpdate = (id) => {
-//     axios.get(`http://localhost:9090/api/user/${id}`)
-//         .then((response) => {
-//             console.log(response.headers);
-//             setUser(response.data);
-//         }, (error) => {
-//             console.log(error);
-//         });
-// }
+const saveUser = (user) => {
+    axios.post("http://localhost:9090/api/user/save-user", user)
+        .then((response) => {
+            console.log(response);
+            toast.success("User saved successfully!")
+        }, (error) => {
+            // console.log(error.response.data);
+            // setFormValidations(backendValidation(error.response.data));
+            toast.error("Something went wrong!")
+        });
+};
+
+export default saveUser;

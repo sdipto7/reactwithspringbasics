@@ -4,12 +4,13 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import userApi from "./api/userApi";
+import saveUser from "./api/userApi";
 import userValidation from "./validation/userValidation";
 import useUser from "./hook/useUser";
+import useValidation from "./hook/useValidation";
 
 function UserForm() {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useUser({});
     const [formValidations, setFormValidations] = useState({});
     const { id } = useParams();
 
@@ -36,19 +37,6 @@ function UserForm() {
             });
     }
 
-    const saveUser = (user) => {
-        axios.post("http://localhost:9090/api/user/save-user", user)
-            .then((response) => {
-                console.log(response);
-                toast.success("User saved successfully!")
-                setUser({ firstName: '', lastName: '', username: '' });
-            }, (error) => {
-                // console.log(error.response.data);
-                setFormValidations(backendValidation(error.response.data));
-                toast.error("Something went wrong!")
-            });
-    };
-
     const updateUser = (user) => {
         axios.put("http://localhost:9090/api/user/update-user", user)
             .then((response) => {
@@ -72,6 +60,7 @@ function UserForm() {
             } else {
                 updateUser(user);
             }
+            setUser({ firstName: '', lastName: '', username: '' });
         }
     };
 
