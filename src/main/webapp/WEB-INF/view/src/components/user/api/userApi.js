@@ -2,16 +2,25 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 
-const saveUser = (user) => {
-    axios.post("http://localhost:9090/api/user/save-user", user)
+export const saveUser = (user) => {
+
+    return new Promise((resolve, reject) => {
+        axios.post("http://localhost:9090/api/user/save-user", user)
+            .then((result) => {
+                toast.success("User saved successfully!")
+            }, (error) => {
+                resolve({ hasError: true, errors: error.response.data });
+            })
+    });
+};
+
+export const updateUser = (user) => {
+    axios.put("http://localhost:9090/api/user/update-user", user)
         .then((response) => {
-            console.log(response);
-            toast.success("User saved successfully!")
+            console.log(response.data);
+            toast.success("User Updated successfully!")
         }, (error) => {
-            // console.log(error.response.data);
-            // setFormValidations(backendValidation(error.response.data));
+            console.log(error);
             toast.error("Something went wrong!")
         });
 };
-
-export default saveUser;

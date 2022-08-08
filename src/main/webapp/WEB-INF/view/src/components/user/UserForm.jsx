@@ -4,10 +4,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import saveUser from "./api/userApi";
-import userValidation from "./validation/userValidation";
+import { saveUser, updateUser } from "./api/userApi";
 import useUser from "./hook/useUser";
-import useValidation from "./hook/useValidation";
 
 function UserForm() {
     const [user, setUser] = useUser({});
@@ -37,18 +35,6 @@ function UserForm() {
             });
     }
 
-    const updateUser = (user) => {
-        axios.put("http://localhost:9090/api/user/update-user", user)
-            .then((response) => {
-                console.log(response.data);
-                toast.success("User Updated successfully!")
-                setUser({ firstName: '', lastName: '', username: '' });
-            }, (error) => {
-                console.log(error);
-                toast.error("Something went wrong!")
-            });
-    };
-
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -56,7 +42,11 @@ function UserForm() {
 
         if (Object.keys(formValidations).length === 0) {
             if (id === undefined || id === null || id == '') {
-                saveUser(user)
+                saveUser(user).then(res=>{
+                    if (res.hasError) {
+                        setFormValidations(backendValidation(res.errors));
+                    }
+                });
             } else {
                 updateUser(user);
             }
@@ -82,7 +72,7 @@ function UserForm() {
 
     const backendValidation = (errorData) => {
         const errors = {};
-        
+
         errors.firstName = errorData.firstName;
         errors.lastName = errorData.lastName;
         errors.username = errorData.username;

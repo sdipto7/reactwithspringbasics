@@ -19,14 +19,14 @@ public class UserDto {
     private long id;
 
     @NotNull
-    @Size(min = 2, max = 10, message = "firstName must be {0} and {1} length")
+    @Size(min = 2, max = 10, message = "First Name must be 2 and 10 length")
     private String firstName;
 
     @NotNull
-    @Size(min = 2, max = 10, message = "firstName must be {0} and {1} length")
+    @Size(min = 2, max = 10, message = "Last name must be 2 and 10 length")
     private String lastName;
 
     @NotNull
-    @Size(min = 2, max = 10, message = "firstName must be {0} and {1} length")
+    @Size(min = 2, max = 10, message = "Username must be 2 and 10 length")
     private String username;
 }
