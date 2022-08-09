@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 

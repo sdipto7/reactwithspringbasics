@@ -18,7 +18,7 @@ export const getUserList = () => {
     return new Promise((resolve, reject) => {
         axios.get('http://localhost:9090/api/user/user-list').then(
             (result) => {
-                resolve({hasError : false, userList : result.data});
+                resolve({ hasError: false, userList: result.data });
                 toast.success("All user data successfully loaded");
             },
             (error) => {
@@ -50,6 +50,21 @@ export const updateUser = (user) => {
                 toast.success("User Updated successfully!")
             }, (error) => {
                 resolve({ hasError: true, errors: error.response.data });
+            });
+    });
+};
+
+export const deleteUser = (id) => {
+
+    return new Promise((resolve, reject) => {
+        axios.delete(`http://localhost:9090/api/user/delete-user/${id}`).then(
+            (response) => {
+                toast.success("User deleted successfully!");
+                resolve({ hasError: false });
+            },
+            (error) => {
+                toast.error("Something went wrong!");
+                resolve({ hasError: true });
             });
     });
 };

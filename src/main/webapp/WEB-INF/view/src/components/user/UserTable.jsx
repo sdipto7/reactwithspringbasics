@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
-import axios from "axios";
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 
-import { getUserList } from "./api/userApi";
+import { getUserList, deleteUser } from "./api/userApi";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
@@ -20,19 +19,12 @@ function UserTable({ width = 'auto', height = 'auto' }) {
         });
     }, []);
 
-    //function to delete a user using an id
-    const deleteUser = (id) => {
-        console.log(id);
-        axios.delete(`http://localhost:9090/api/user/delete-user/${id}`).then(
-            (response) => {
-                console.log("successfully deleted");
-                toast.success("User deleted successfully!");
+    const onDeleteClick = (id) => {
+        deleteUser(id).then(res => {
+            if(!res.hasError){
                 setUserList(userList.filter((user) => user.id != id));
-            },
-            (error) => {
-                console.log(error);
-                toast.error("Something went wrong!");
-            });
+            }
+        });
     };
 
     return (
@@ -64,7 +56,7 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                                     <Button
                                         className="mx-2"
                                         outline color="warning"
-                                        onClick={() => deleteUser(user.id)}>
+                                        onClick={() => onDeleteClick(user.id)}>
                                         Delete
                                     </Button>
                                 </td>
