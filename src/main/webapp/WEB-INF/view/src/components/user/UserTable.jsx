@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
-import axios from "axios";
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
+
+import { getUserList, deleteUser } from "../../api/userApi";
+import { getUserListUrl, deleteUserUrl } from "../../resource/url";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
@@ -11,41 +13,19 @@ function UserTable({ width = 'auto', height = 'auto' }) {
 
     useEffect(() => {
         document.title = 'User List';
-        getUserList();
+        getUserList(getUserListUrl).then(res => {
+            if (!res.hasError) {
+                setUserList(res.userList);
+            }
+        });
     }, []);
 
-    //function to get user list
-    const getUserList = () => {
-        axios.get('http://localhost:9090/api/user/user-list').then(
-            (response) => {
-                setUserList(response.data)
-                toast.success("All user data successfully loaded");
-            },
-            (error) => {
-                toast.error("Something went wrong");
-            }
-        );
-    }
-
-    //function to delete a user using an id
-    const deleteUser = (id) => {
-        console.log(id);
-        axios.delete(`http://localhost:9090/api/user/delete-user/${id}`).then(
-            (response) => {
-                console.log("successfully deleted");
-                toast.success("User deleted successfully!");
+    const onDeleteClick = (id) => {
+        deleteUser(deleteUserUrl, id).then(res => {
+            if (!res.hasError) {
                 setUserList(userList.filter((user) => user.id != id));
-            },
-            (error) => {
-                console.log(error);
-                toast.error("Something went wrong!");
-            });
-    };
-
-    const updateUser = (user) => {
-        // toast.info("Clicked on update ", { position: "top-center" });
-        console.log("clicked on update");
-        console.log(user);
+            }
+        });
     };
 
     return (
@@ -70,15 +50,14 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                                 ))}
                                 <td>
                                     <Link to={`/updateUser/${user.id}`}>
-                                        <Button
-                                            outline color="info"
-                                            onClick={() => updateUser(user)}>Update
+                                        <Button outline color="info">
+                                            Update
                                         </Button>
                                     </Link>
                                     <Button
                                         className="mx-2"
                                         outline color="warning"
-                                        onClick={() => deleteUser(user.id)}>
+                                        onClick={() => onDeleteClick(user.id)}>
                                         Delete
                                     </Button>
                                 </td>

@@ -1,15 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import userApi from "./api/userApi";
-import userValidation from "./validation/userValidation";
-import useUser from "./hook/useUser";
+import { getUserToUpdate, saveUser, updateUser } from "../../api/userApi";
+import useUser from "../../hook/useUser";
+import { getUserToUpdateUrl, saveUserUrl, updateUserUrl } from "../../resource/url";
 
 function UserForm() {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useUser({});
     const [formValidations, setFormValidations] = useState({});
     const { id } = useParams();
 
@@ -20,46 +19,15 @@ function UserForm() {
     useEffect(() => {
         document.title = "User Form";
         if (!(id == null || id == '')) {
-            getUserToUpdate(id);
+            getUserToUpdate(getUserToUpdateUrl, id).then(res => {
+                if (!res.hasError) {
+                    setUser(res.user);
+                }
+            });
         } else {
             setUser("");
         }
     }, []);
-
-    const getUserToUpdate = (id) => {
-        axios.get(`http://localhost:9090/api/user/${id}`)
-            .then((response) => {
-                console.log(response.headers);
-                setUser(response.data);
-            }, (error) => {
-                console.log(error);
-            });
-    }
-
-    const saveUser = (user) => {
-        axios.post("http://localhost:9090/api/user/save-user", user)
-            .then((response) => {
-                console.log(response);
-                toast.success("User saved successfully!")
-                setUser({ firstName: '', lastName: '', username: '' });
-            }, (error) => {
-                // console.log(error.response.data);
-                setFormValidations(backendValidation(error.response.data));
-                toast.error("Something went wrong!")
-            });
-    };
-
-    const updateUser = (user) => {
-        axios.put("http://localhost:9090/api/user/update-user", user)
-            .then((response) => {
-                console.log(response.data);
-                toast.success("User Updated successfully!")
-                setUser({ firstName: '', lastName: '', username: '' });
-            }, (error) => {
-                console.log(error);
-                toast.error("Something went wrong!")
-            });
-    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -68,9 +36,21 @@ function UserForm() {
 
         if (Object.keys(formValidations).length === 0) {
             if (id === undefined || id === null || id == '') {
-                saveUser(user)
+                saveUser(saveUserUrl, user).then(res => {
+                    if (res.hasError) {
+                        setFormValidations(backendValidation(res.errors));
+                    } else {
+                        setUser({ firstName: '', lastName: '', username: '' });
+                    }
+                });
             } else {
-                updateUser(user);
+                updateUser(updateUserUrl, user).then(res => {
+                    if (res.hasError) {
+                        setFormValidations(backendValidation(res.errors));
+                    } else {
+                        setUser({ firstName: '', lastName: '', username: '' });
+                    }
+                });
             }
         }
     };
@@ -93,7 +73,7 @@ function UserForm() {
 
     const backendValidation = (errorData) => {
         const errors = {};
-        
+
         errors.firstName = errorData.firstName;
         errors.lastName = errorData.lastName;
         errors.username = errorData.username;
