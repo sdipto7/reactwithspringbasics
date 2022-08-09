@@ -4,6 +4,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 
+import { getUserList } from "./api/userApi";
+
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
 
@@ -11,21 +13,12 @@ function UserTable({ width = 'auto', height = 'auto' }) {
 
     useEffect(() => {
         document.title = 'User List';
-        getUserList();
-    }, []);
-
-    //function to get user list
-    const getUserList = () => {
-        axios.get('http://localhost:9090/api/user/user-list').then(
-            (response) => {
-                setUserList(response.data)
-                toast.success("All user data successfully loaded");
-            },
-            (error) => {
-                toast.error("Something went wrong");
+        getUserList().then(res => {
+            if (!res.hasError) {
+                setUserList(res.userList);
             }
-        );
-    }
+        });
+    }, []);
 
     //function to delete a user using an id
     const deleteUser = (id) => {
@@ -40,12 +33,6 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                 console.log(error);
                 toast.error("Something went wrong!");
             });
-    };
-
-    const updateUser = (user) => {
-        // toast.info("Clicked on update ", { position: "top-center" });
-        console.log("clicked on update");
-        console.log(user);
     };
 
     return (
@@ -70,9 +57,8 @@ function UserTable({ width = 'auto', height = 'auto' }) {
                                 ))}
                                 <td>
                                     <Link to={`/updateUser/${user.id}`}>
-                                        <Button
-                                            outline color="info"
-                                            onClick={() => updateUser(user)}>Update
+                                        <Button outline color="info">
+                                            Update
                                         </Button>
                                     </Link>
                                     <Button

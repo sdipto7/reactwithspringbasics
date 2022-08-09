@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import { saveUser, updateUser } from "./api/userApi";
+import { getUserToUpdate, saveUser, updateUser } from "./api/userApi";
 import useUser from "./hook/useUser";
 
 function UserForm() {
@@ -19,21 +19,15 @@ function UserForm() {
     useEffect(() => {
         document.title = "User Form";
         if (!(id == null || id == '')) {
-            getUserToUpdate(id);
+            getUserToUpdate(id).then(res => {
+                if (!res.hasError) {
+                    setUser(res.user);
+                }
+            });
         } else {
             setUser("");
         }
     }, []);
-
-    const getUserToUpdate = (id) => {
-        axios.get(`http://localhost:9090/api/user/${id}`)
-            .then((response) => {
-                console.log(response.headers);
-                setUser(response.data);
-            }, (error) => {
-                console.log(error);
-            });
-    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -42,13 +36,17 @@ function UserForm() {
 
         if (Object.keys(formValidations).length === 0) {
             if (id === undefined || id === null || id == '') {
-                saveUser(user).then(res=>{
+                saveUser(user).then(res => {
                     if (res.hasError) {
                         setFormValidations(backendValidation(res.errors));
                     }
                 });
             } else {
-                updateUser(user);
+                updateUser(user).then(res => {
+                    if (res.hasError) {
+                        setFormValidations(backendValidation(res.errors));
+                    }
+                });
             }
             setUser({ firstName: '', lastName: '', username: '' });
         }

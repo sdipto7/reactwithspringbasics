@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/update-user")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto) {
         User savedUser = userService.saveOrUpdate(userHelper.getUpdatedUser(userDto));
 
         UserDto responseUser = UserDtoMapper.convertUserToUserDto(savedUser);
