@@ -3,7 +3,8 @@ import { Button } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 
-import { getUserList, deleteUser } from "./api/userApi";
+import { getUserList, deleteUser } from "../../api/userApi";
+import { getUserListUrl, deleteUserUrl } from "../../resource/url";
 
 function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
@@ -12,7 +13,7 @@ function UserTable({ width = 'auto', height = 'auto' }) {
 
     useEffect(() => {
         document.title = 'User List';
-        getUserList().then(res => {
+        getUserList(getUserListUrl).then(res => {
             if (!res.hasError) {
                 setUserList(res.userList);
             }
@@ -20,8 +21,8 @@ function UserTable({ width = 'auto', height = 'auto' }) {
     }, []);
 
     const onDeleteClick = (id) => {
-        deleteUser(id).then(res => {
-            if(!res.hasError){
+        deleteUser(deleteUserUrl, id).then(res => {
+            if (!res.hasError) {
                 setUserList(userList.filter((user) => user.id != id));
             }
         });

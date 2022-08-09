@@ -1,9 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getUserToUpdate = (id) => {
+export const getUserToUpdate = (url, id) => {
     return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:9090/api/user/${id}`)
+        axios.get(`${url}/${id}`)
             .then((result) => {
                 resolve({ hasError: false, user: result.data });
             }, (error) => {
@@ -13,10 +13,10 @@ export const getUserToUpdate = (id) => {
     });
 };
 
-export const getUserList = () => {
+export const getUserList = (url) => {
 
     return new Promise((resolve, reject) => {
-        axios.get('http://localhost:9090/api/user/user-list').then(
+        axios.get(`${url}`).then(
             (result) => {
                 resolve({ hasError: false, userList: result.data });
                 toast.success("All user data successfully loaded");
@@ -30,10 +30,10 @@ export const getUserList = () => {
     });
 };
 
-export const saveUser = (user) => {
+export const saveUser = (url, user) => {
 
     return new Promise((resolve, reject) => {
-        axios.post("http://localhost:9090/api/user/save-user", user)
+        axios.post(`${url}`, user)
             .then((result) => {
                 toast.success("User saved successfully!")
             }, (error) => {
@@ -42,10 +42,10 @@ export const saveUser = (user) => {
     });
 };
 
-export const updateUser = (user) => {
+export const updateUser = (url, user) => {
 
     return new Promise((resolve, reject) => {
-        axios.put("http://localhost:9090/api/user/update-user", user)
+        axios.put(`${url}`, user)
             .then((result) => {
                 toast.success("User Updated successfully!")
             }, (error) => {
@@ -54,10 +54,10 @@ export const updateUser = (user) => {
     });
 };
 
-export const deleteUser = (id) => {
+export const deleteUser = (url, id) => {
 
     return new Promise((resolve, reject) => {
-        axios.delete(`http://localhost:9090/api/user/delete-user/${id}`).then(
+        axios.delete(`${url}/${id}`).then(
             (response) => {
                 toast.success("User deleted successfully!");
                 resolve({ hasError: false });

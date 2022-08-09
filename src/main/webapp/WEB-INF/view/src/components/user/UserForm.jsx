@@ -3,8 +3,9 @@ import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import { getUserToUpdate, saveUser, updateUser } from "./api/userApi";
-import useUser from "./hook/useUser";
+import { getUserToUpdate, saveUser, updateUser } from "../../api/userApi";
+import useUser from "../../hook/useUser";
+import { getUserToUpdateUrl, saveUserUrl, updateUserUrl } from "../../resource/url";
 
 function UserForm() {
     const [user, setUser] = useUser({});
@@ -18,7 +19,7 @@ function UserForm() {
     useEffect(() => {
         document.title = "User Form";
         if (!(id == null || id == '')) {
-            getUserToUpdate(id).then(res => {
+            getUserToUpdate(getUserToUpdateUrl, id).then(res => {
                 if (!res.hasError) {
                     setUser(res.user);
                 }
@@ -35,19 +36,22 @@ function UserForm() {
 
         if (Object.keys(formValidations).length === 0) {
             if (id === undefined || id === null || id == '') {
-                saveUser(user).then(res => {
+                saveUser(saveUserUrl, user).then(res => {
                     if (res.hasError) {
                         setFormValidations(backendValidation(res.errors));
+                    } else {
+                        setUser({ firstName: '', lastName: '', username: '' });
                     }
                 });
             } else {
-                updateUser(user).then(res => {
+                updateUser(updateUserUrl, user).then(res => {
                     if (res.hasError) {
                         setFormValidations(backendValidation(res.errors));
+                    } else {
+                        setUser({ firstName: '', lastName: '', username: '' });
                     }
                 });
             }
-            setUser({ firstName: '', lastName: '', username: '' });
         }
     };
 
