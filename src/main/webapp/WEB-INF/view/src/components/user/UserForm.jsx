@@ -52,8 +52,10 @@ export default function UserForm() {
                         setUser({ firstName: '', lastName: '', username: '' });
                     }
                 });
-            }
+            }                        
         }
+
+        setFormValidations({});
     };
 
     return (
