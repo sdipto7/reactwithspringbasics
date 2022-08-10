@@ -6,15 +6,12 @@ import { useParams } from "react-router-dom";
 import { getUserToUpdate, saveUser, updateUser } from "../../api/userApi";
 import useUser from "../../hook/useUser";
 import { getUserToUpdateUrl, saveUserUrl, updateUserUrl } from "../../resource/url";
+import { frontendValidation, backendValidation } from "../../validation/userValidation";
 
-function UserForm() {
+export default function UserForm() {
     const [user, setUser] = useUser({});
     const [formValidations, setFormValidations] = useState({});
     const { id } = useParams();
-
-    const onChange = (event) => {
-        setUser({ ...user, [event.target.name]: event.target.value });
-    };
 
     useEffect(() => {
         document.title = "User Form";
@@ -28,6 +25,10 @@ function UserForm() {
             setUser("");
         }
     }, []);
+
+    const onChange = (event) => {
+        setUser({ ...user, [event.target.name]: event.target.value });
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -55,35 +56,8 @@ function UserForm() {
         }
     };
 
-    const frontendValidation = (user) => {
-        const errors = {};
-
-        // if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
-        //     errors.firstName = "First Name is required";
-        // }
-        // if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
-        //     errors.lastName = "Last Name is required";
-        // }
-        // if (user.username === null || user.username === undefined || user.username == '') {
-        //     errors.username = "Username is required";
-        // }
-
-        return errors;
-    }
-
-    const backendValidation = (errorData) => {
-        const errors = {};
-
-        errors.firstName = errorData.firstName;
-        errors.lastName = errorData.lastName;
-        errors.username = errorData.username;
-
-        return errors;
-    }
-
     return (
         <>
-
             <ToastContainer />
 
             <h1 className="text-center my-3">Add User Information</h1>
@@ -181,5 +155,3 @@ function UserForm() {
         </ >
     );
 };
-
-export default UserForm;

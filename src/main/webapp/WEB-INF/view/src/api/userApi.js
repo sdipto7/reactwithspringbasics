@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getUserToUpdate = (url, id) => {
+    
     return new Promise((resolve, reject) => {
         axios.get(`${url}/${id}`)
             .then((result) => {
