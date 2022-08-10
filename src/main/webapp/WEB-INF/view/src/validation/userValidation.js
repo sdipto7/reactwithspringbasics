@@ -1,15 +1,15 @@
 export const frontendValidation = (user) => {
     const errors = {};
 
-    // if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
-    //     errors.firstName = "First Name is required";
-    // }
-    // if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
-    //     errors.lastName = "Last Name is required";
-    // }
-    // if (user.username === null || user.username === undefined || user.username == '') {
-    //     errors.username = "Username is required";
-    // }
+    if (user.firstName === null || user.firstName === undefined || user.firstName == '') {
+        errors.firstName = "First Name is required";
+    }
+    if (user.lastName === null || user.lastName === undefined || user.lastName == '') {
+        errors.lastName = "Last Name is required";
+    }
+    if (user.username === null || user.username === undefined || user.username == '') {
+        errors.username = "Username is required";
+    }
 
     return errors;
 }
