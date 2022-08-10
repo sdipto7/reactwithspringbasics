@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "reactstrap";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 
 import { getUserList, deleteUser } from "../../api/userApi";
 import { getUserListUrl, deleteUserUrl } from "../../resource/url";
 
-function UserTable({ width = 'auto', height = 'auto' }) {
+
+
+export default function UserTable({ width = 'auto', height = 'auto' }) {
     const colNames = ['Id', 'First Name', 'LastName', 'Username', 'action']
 
     const [userList, setUserList] = useState({});
 
     useEffect(() => {
         document.title = 'User List';
-        getUserList(getUserListUrl).then(res => {
-            if (!res.hasError) {
-                setUserList(res.userList);
-            }
-        });
+        fetchUserList();
     }, []);
 
-    const onDeleteClick = (id) => {
-        deleteUser(deleteUserUrl, id).then(res => {
-            if (!res.hasError) {
-                setUserList(userList.filter((user) => user.id != id));
-            }
-        });
+    const fetchUserList = async () => {
+        let response = await getUserList(getUserListUrl);
+        if (!response.hasError) {
+            setUserList(response.userList);
+        }
+    }
+
+    const onDeleteClick = async (id) => {
+        let response = await deleteUser(deleteUserUrl, id);
+        if (!response.hasError) {
+            setUserList(userList.filter((user) => user.id != id));
+        }
     };
 
     return (
@@ -69,6 +73,4 @@ function UserTable({ width = 'auto', height = 'auto' }) {
             }
         </div>
     )
-}
-
-export default UserTable;
+};

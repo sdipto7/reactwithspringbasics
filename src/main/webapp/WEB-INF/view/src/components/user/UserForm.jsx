@@ -1,26 +1,21 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Form, FormGroup, Input, Label, Button } from "reactstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-import { getUserToUpdate, saveUser, updateUser } from "../../api/userApi";
-import useUser from "../../hook/useUser";
-import { getUserToUpdateUrl, saveUserUrl, updateUserUrl } from "../../resource/url";
+import { findUser, saveUser, updateUser } from "../../api/userApi";
+import { findUserUrl, saveUserUrl, updateUserUrl } from "../../resource/url";
 import { frontendValidation, backendValidation } from "../../validation/userValidation";
 
 export default function UserForm() {
-    const [user, setUser] = useUser({});
+    const [user, setUser] = useState({});
     const [formValidations, setFormValidations] = useState({});
     const { id } = useParams();
 
     useEffect(() => {
         document.title = "User Form";
         if (!(id == null || id == '')) {
-            getUserToUpdate(getUserToUpdateUrl, id).then(res => {
-                if (!res.hasError) {
-                    setUser(res.user);
-                }
-            });
+            findUserToUpdate(id);
         } else {
             setUser("");
         }
@@ -30,38 +25,38 @@ export default function UserForm() {
         setUser({ ...user, [event.target.name]: event.target.value });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         setFormValidations(frontendValidation(user));
 
         if (Object.keys(formValidations).length === 0) {
-            if (id === undefined || id === null || id == '') {
-                saveUser(saveUserUrl, user).then(res => {
-                    if (res.hasError) {
-                        setFormValidations(backendValidation(res.errors));
-                    } else {
-                        setUser({ firstName: '', lastName: '', username: '' });
-                    }
-                });
-            } else {
-                updateUser(updateUserUrl, user).then(res => {
-                    if (res.hasError) {
-                        setFormValidations(backendValidation(res.errors));
-                    } else {
-                        setUser({ firstName: '', lastName: '', username: '' });
-                    }
-                });
-            }                        
+            onSaveOrUpdateClick();
         }
+    };
 
-        setFormValidations({});
+    const findUserToUpdate = async (id) => {
+        let response = await findUser(findUserUrl, id);
+            if (!response.hasError) {
+                setUser(response.user);
+            }
+    };
+
+    const onSaveOrUpdateClick = async () => {
+        let response = (id === undefined || id === null || id == '')
+            ? await saveUser(saveUserUrl, user)
+            : await updateUser(updateUserUrl, user);
+
+        if (response.hasError) {
+            setFormValidations(backendValidation(response.errors));
+        } else {
+            setUser({ firstName: '', lastName: '', username: '' });
+        }
     };
 
     return (
         <>
             <ToastContainer />
-
             <h1 className="text-center my-3">Add User Information</h1>
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
