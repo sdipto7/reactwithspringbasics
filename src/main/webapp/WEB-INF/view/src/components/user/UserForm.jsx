@@ -105,7 +105,7 @@ export default function UserForm() {
                     </p>
                 </FormGroup>
 
-                {/* <FormGroup>
+                <FormGroup>
                     <Row>
                         <Col md="2">
                             <Label>
@@ -135,7 +135,7 @@ export default function UserForm() {
                 <FormGroup>
                     <Label>Salary: </Label>
                     <Input type='number' placeholder='Enter Amount in number' name='salary' id='salary' />
-                </FormGroup> */}
+                </FormGroup>
 
 
                 <Container className="text-center">
